@@ -38,7 +38,7 @@ struct ContentView: View {
                 Spacer()
                 
                 VStack(alignment: .leading) {
-                    Text("Hamburguesas")
+                    Text("Hamburguesas ")
                         .font(.largeTitle)
                         .padding(.bottom, 20)
                     
