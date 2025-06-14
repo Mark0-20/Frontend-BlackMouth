@@ -2,7 +2,7 @@
 //  BlackmouthFrontApp.swift
 //  BlackmouthFront
 //
-//  Created by Jakeline Hernandez reynoso on 13/06/25.
+//  Created by Miguel Munoz on 13/06/25.
 //
 
 import SwiftUI
