@@ -102,7 +102,7 @@ struct ContentView: View {
                 .background(Color.black)
                 
                 ScrollView {
-                    VStack(alignment: .leading) {
+                    VStack(alignment: .center) {
                         Text("Hamburguesas")
                             .font(.largeTitle)
                             .padding(.bottom, 20)
@@ -139,8 +139,9 @@ struct ContentView: View {
                         
                         Spacer()
                     }
-                    .padding()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .padding(.horizontal, 50)
+                    .frame(maxWidth: 800)
+                    .frame(maxWidth: .infinity, alignment: .center)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
