@@ -164,7 +164,7 @@ struct MenuItemView: View {
             Image(imageName)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 100, height: 100)
+                .frame(width: 130, height: 130) // tamaño aumentado ligeramente
             Text(title)
                 .font(.headline)
             Text("ver más")
