@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct ContentView: View {
     @State private var selectedCard: CardData? = nil
     
@@ -49,87 +48,103 @@ struct ContentView: View {
                  price: 22.00),
     ]
     
+
+    var screen = NSScreen.main!.visibleFrame
+
     var body: some View {
         NavigationView {
-            HStack(spacing:0){
+            HStack(spacing: 0) {
                 VStack {
                     Image(systemName: "circle.fill")
                         .resizable()
-                        .frame(width: 50, height: 50)
-                        .foregroundColor(Color.white)
+                        .scaledToFit()
+                        .frame(width: 40, height: 40)
+                        .foregroundColor(.white)
                         .padding(.top, 20)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
                     Spacer()
                     
-                    
-                    VStack(spacing: 30) {
+                    VStack(spacing: 25) {
                         Image(systemName: "fork.knife")
                             .resizable()
-                            .frame(width: 30, height: 30)
-                            .foregroundColor(Color.white)
+                            .scaledToFit()
+                            .frame(width: 25, height: 25)
+                            .foregroundColor(.white)
                         Image(systemName: "takeoutbag.and.cup.and.straw")
                             .resizable()
-                            .frame(width: 30, height: 30)
-                            .foregroundColor(Color.white)
+                            .scaledToFit()
+                            .frame(width: 25, height: 25)
+                            .foregroundColor(.white)
                         Image(systemName: "cup.and.saucer")
                             .resizable()
-                            .frame(width: 30, height: 30)
-                            .foregroundColor(Color.white)
+                            .scaledToFit()
+                            .frame(width: 25, height: 25)
+                            .foregroundColor(.white)
                         Image(systemName: "cart")
                             .resizable()
-                            .frame(width: 30, height: 30)
-                            .foregroundColor(Color.white)
+                            .scaledToFit()
+                            .frame(width: 25, height: 25)
+                            .foregroundColor(.white)
                         Image(systemName: "phone")
                             .resizable()
-                            .frame(width: 30, height: 30)
-                            .foregroundColor(Color.white)
+                            .scaledToFit()
+                            .frame(width: 25, height: 25)
+                            .foregroundColor(.white)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.bottom, 40)
+                    .padding(.bottom, 30)
                     Spacer()
                 }
-                .frame(width: 70)
+                .frame(minWidth: 60, maxWidth: 90)
                 .frame(maxHeight: .infinity)
                 .padding(.leading, 10)
                 .background(Color.black)
                 
-                Spacer()
-                
-                VStack(alignment: .leading) {
-                    Text("Hamburguesas")
-                        .font(.largeTitle)
-                        .padding(.bottom, 20)
-                    
-                    HStack {
-                        ForEach(burgers) { item in
-                            Button {
-                                selectedCard = item
-                            } label: {
-                                MenuItemView(imageName: item.imageName, title: item.title)
+                ScrollView {
+                    VStack(alignment: .leading) {
+                        Text("Hamburguesas")
+                            .font(.largeTitle)
+                            .padding(.bottom, 20)
+                        
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack {
+                                ForEach(burgers) { item in
+                                    Button {
+                                        selectedCard = item
+                                    } label: {
+                                        MenuItemView(imageName: item.imageName, title: item.title)
+                                    }
+                                }
+                            }
+                            .padding(.bottom, 10)
+                        }
+                        
+                        Text("Bebidas")
+                            .font(.largeTitle)
+                            .padding(.top, 20)
+                            .padding(.bottom, 20)
+                        
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack {
+                                ForEach(drinks) { item in
+                                    Button {
+                                        selectedCard = item
+                                    } label: {
+                                        MenuItemView(imageName: item.imageName, title: item.title)
+                                    }
+                                }
                             }
                         }
+                        
+                        Spacer()
                     }
-                    
-                    Text("Bebidas")
-                        .font(.largeTitle)
-                        .padding(.top, 20)
-                        .padding(.bottom, 20)
-                    
-                    HStack {
-                        ForEach(drinks) { item in
-                            Button {
-                                selectedCard = item
-                            } label: {
-                                MenuItemView(imageName: item.imageName, title: item.title)
-                            }
-                        }
-                    }
-                    
-                    Spacer()
+                    .padding()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-                .padding()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
+            .frame(width: screen.width, height: screen.height)
             .sheet(item: $selectedCard) { card in
                 CardView(card: card) {
                     selectedCard = nil
@@ -147,6 +162,7 @@ struct MenuItemView: View {
         VStack {
             Image(imageName)
                 .resizable()
+                .scaledToFit()
                 .frame(width: 100, height: 100)
             Text(title)
                 .font(.headline)
@@ -158,4 +174,4 @@ struct MenuItemView: View {
         }
         .padding()
     }
-} 
+}
