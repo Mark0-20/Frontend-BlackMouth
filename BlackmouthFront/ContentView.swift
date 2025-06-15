@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct ContentView: View {
-    
+    @State private var selectedCard: CardData? = nil
+
     let burgers = [
         CardData(title: "Clásica",
                  imageName: "classic_burger",
@@ -27,7 +28,7 @@ struct ContentView: View {
                  ingredients: ["Boneless BBQ", "Lechuga", "Jitomate", "Aderezo ranch", "Pan artesanal"],
                  price: 85.00),
     ]
-    
+
     let drinks = [
         CardData(title: "Coca-cola",
                  imageName: "coca_cola",
@@ -46,7 +47,7 @@ struct ContentView: View {
                  ingredients: ["Jugo natural de naranja", "Exprimido al momento"],
                  price: 22.00),
     ]
-    
+
     var body: some View {
         NavigationView {
             HStack(spacing: 0) {
@@ -57,9 +58,9 @@ struct ContentView: View {
                         .foregroundColor(Color.white)
                         .padding(.top, 20)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                    
+
                     Spacer()
-                    
+
                     VStack(spacing: 30) {
                         Image(systemName: "fork.knife")
                             .resizable()
@@ -84,41 +85,50 @@ struct ContentView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.bottom, 40)
-                    
+
                     Spacer()
                 }
                 .frame(width: 70)
                 .frame(maxHeight: .infinity)
                 .padding(.leading, 10)
                 .background(Color.black)
-                
+
                 Spacer()
-                
+
                 VStack(alignment: .leading) {
                     Text("Hamburguesas")
                         .font(.largeTitle)
                         .padding(.bottom, 20)
-                    
+
                     HStack {
                         ForEach(burgers) { item in
-                            MenuItemView(imageName: item.imageName, title: item.title)
+                            Button {
+                                selectedCard = item
+                            } label: {
+                                MenuItemView(imageName: item.imageName, title: item.title)
+                            }
                         }
                     }
-                    
+
                     Text("Bebidas")
                         .font(.largeTitle)
                         .padding(.top, 20)
                         .padding(.bottom, 20)
-                    
+
                     HStack {
                         ForEach(drinks) { item in
                             MenuItemView(imageName: item.imageName, title: item.title)
                         }
                     }
-                    
+
                     Spacer()
                 }
                 .padding()
+            }
+            .sheet(item: $selectedCard) { card in
+                CardView(card: card) {
+                    selectedCard = nil
+                }
             }
         }
     }
@@ -127,7 +137,7 @@ struct ContentView: View {
 struct MenuItemView: View {
     var imageName: String
     var title: String
-    
+
     var body: some View {
         VStack {
             Image(imageName)
@@ -144,12 +154,3 @@ struct MenuItemView: View {
         .padding()
     }
 }
-
-struct CardData: Identifiable, Equatable {
-    let id = UUID()
-    var title: String
-    var imageName: String
-    var ingredients: [String]
-    var price: Double
-}
-
