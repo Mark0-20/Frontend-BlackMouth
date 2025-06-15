@@ -8,45 +8,101 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    let burgers = [
+        CardData(title: "Clásica",
+                 imageName: "classic_burger",
+                 ingredients: ["Carne de res", "Lechuga", "Jitomate", "Cebolla", "Pepinillos", "Queso amarillo"],
+                 price: 79.00),
+        CardData(title: "Doble",
+                 imageName: "double_burger",
+                 ingredients: ["Doble carne", "Lechuga", "Jitomate", "Cebolla", "Pepinillos", "Queso doble"],
+                 price: 99.00),
+        CardData(title: "Cheese",
+                 imageName: "cheese_burger",
+                 ingredients: ["Carne de res", "Queso cheddar", "Tocino", "Cebolla caramelizada", "Pan brioche"],
+                 price: 89.00),
+        CardData(title: "Boneless",
+                 imageName: "boneless_burger",
+                 ingredients: ["Boneless BBQ", "Lechuga", "Jitomate", "Aderezo ranch", "Pan artesanal"],
+                 price: 85.00),
+    ]
+    
+    let drinks = [
+        CardData(title: "Coca-cola",
+                 imageName: "coca_cola",
+                 ingredients: ["Refresco de cola", "355ml bien fría"],
+                 price: 25.00),
+        CardData(title: "Cerveza",
+                 imageName: "beer",
+                 ingredients: ["Botella 355ml", "Marca local o importada"],
+                 price: 35.00),
+        CardData(title: "Jamaica",
+                 imageName: "jamaica",
+                 ingredients: ["Agua de jamaica natural", "Endulzada con poca azúcar"],
+                 price: 20.00),
+        CardData(title: "Naranja",
+                 imageName: "orange_juice",
+                 ingredients: ["Jugo natural de naranja", "Exprimido al momento"],
+                 price: 22.00),
+    ]
+    
     var body: some View {
-        VStack {
-            HStack {
+        NavigationView {
+            HStack(spacing: 0) {
                 VStack {
                     Image(systemName: "circle.fill")
                         .resizable()
                         .frame(width: 50, height: 50)
+                        .foregroundColor(Color.white)
+                        .padding(.top, 20)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    
                     Spacer()
-                    Image(systemName: "hamburger")
-                        .resizable()
-                        .frame(width: 30, height: 30)
-                    Image(systemName: "fries")
-                        .resizable()
-                        .frame(width: 30, height: 30)
-                    Image(systemName: "drink")
-                        .resizable()
-                        .frame(width: 30, height: 30)
-                    Image(systemName: "cart")
-                        .resizable()
-                        .frame(width: 30, height: 30)
-                    Image(systemName: "phone")
-                        .resizable()
-                        .frame(width: 30, height: 30)
+                    
+                    VStack(spacing: 30) {
+                        Image(systemName: "fork.knife")
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                            .foregroundColor(Color.white)
+                        Image(systemName: "takeoutbag.and.cup.and.straw")
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                            .foregroundColor(Color.white)
+                        Image(systemName: "cup.and.saucer")
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                            .foregroundColor(Color.white)
+                        Image(systemName: "cart")
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                            .foregroundColor(Color.white)
+                        Image(systemName: "phone")
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                            .foregroundColor(Color.white)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.bottom, 40)
+                    
+                    Spacer()
                 }
-                .padding()
+                .frame(width: 70)
+                .frame(maxHeight: .infinity)
+                .padding(.leading, 10)
                 .background(Color.black)
                 
                 Spacer()
                 
                 VStack(alignment: .leading) {
-                    Text("Hamburguesas ")
+                    Text("Hamburguesas")
                         .font(.largeTitle)
                         .padding(.bottom, 20)
                     
                     HStack {
-                        MenuItemView(imageName: "classic_burger", title: "Clásica")
-                        MenuItemView(imageName: "double_burger", title: "Doble")
-                        MenuItemView(imageName: "cheese_burger", title: "Cheese")
-                        MenuItemView(imageName: "boneless_burger", title: "Boneless")
+                        ForEach(burgers) { item in
+                            MenuItemView(imageName: item.imageName, title: item.title)
+                        }
                     }
                     
                     Text("Bebidas")
@@ -55,11 +111,12 @@ struct ContentView: View {
                         .padding(.bottom, 20)
                     
                     HStack {
-                        MenuItemView(imageName: "coca_cola", title: "Coca-cola")
-                        MenuItemView(imageName: "beer", title: "Cerveza")
-                        MenuItemView(imageName: "jamaica", title: "Jamaica")
-                        MenuItemView(imageName: "orange_juice", title: "Naranja")
+                        ForEach(drinks) { item in
+                            MenuItemView(imageName: item.imageName, title: item.title)
+                        }
                     }
+                    
+                    Spacer()
                 }
                 .padding()
             }
@@ -78,22 +135,21 @@ struct MenuItemView: View {
                 .frame(width: 100, height: 100)
             Text(title)
                 .font(.headline)
-            Button(action: {
-                // Acción para "ver más"
-            }) {
-                Text("ver más")
-                    .font(.subheadline)
-                    .padding(5)
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(5)
-            }
+            Text("ver más")
+                .font(.subheadline)
+                .padding(5)
+                .background(Color.gray.opacity(0.2))
+                .cornerRadius(5)
         }
         .padding()
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
+struct CardData: Identifiable, Equatable {
+    let id = UUID()
+    var title: String
+    var imageName: String
+    var ingredients: [String]
+    var price: Double
 }
+
