@@ -8,52 +8,16 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var selectedCard: CardData? = nil
-    
-    let burgers = [
-        CardData(title: "Clásica",
-                 imageName: "classic_burger",
-                 ingredients: ["Carne de res", "Lechuga", "Jitomate", "Cebolla", "Pepinillos", "Queso amarillo"],
-                 price: 79.00),
-        CardData(title: "Doble",
-                 imageName: "double_burger",
-                 ingredients: ["Doble carne", "Lechuga", "Jitomate", "Cebolla", "Pepinillos", "Queso doble"],
-                 price: 99.00),
-        CardData(title: "Cheese",
-                 imageName: "cheese_burger",
-                 ingredients: ["Carne de res", "Queso cheddar", "Tocino", "Cebolla caramelizada", "Pan brioche"],
-                 price: 89.00),
-        CardData(title: "Boneless",
-                 imageName: "boneless_burger",
-                 ingredients: ["Boneless BBQ", "Lechuga", "Jitomate", "Aderezo ranch", "Pan artesanal"],
-                 price: 85.00),
-    ]
-    
-    let drinks = [
-        CardData(title: "Coca-cola",
-                 imageName: "coca_cola",
-                 ingredients: ["Refresco de cola", "355ml bien fría"],
-                 price: 25.00),
-        CardData(title: "Cerveza",
-                 imageName: "beer",
-                 ingredients: ["Botella 355ml", "Marca local o importada"],
-                 price: 35.00),
-        CardData(title: "Jamaica",
-                 imageName: "jamaica",
-                 ingredients: ["Agua de jamaica natural", "Endulzada con poca azúcar"],
-                 price: 20.00),
-        CardData(title: "Naranja",
-                 imageName: "orange_juice",
-                 ingredients: ["Jugo natural de naranja", "Exprimido al momento"],
-                 price: 22.00),
-    ]
-    
+    @State private var selectedCard: MenuItem? = nil
+    @State private var menuItems: [MenuItem] = []
+    @State private var errorMessage: String?
+    @StateObject private var apiService = APIService() // Instancia del servicio API
 
-    var screen = NSScreen.main!.visibleFrame
 
     var body: some View {
         NavigationView {
             HStack(spacing: 0) {
+               
                 VStack {
                     Image(systemName: "circle.fill")
                         .resizable()
@@ -62,9 +26,9 @@ struct ContentView: View {
                         .foregroundColor(.white)
                         .padding(.top, 20)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                    
+
                     Spacer()
-                    
+
                     VStack(spacing: 25) {
                         Image(systemName: "fork.knife")
                             .resizable()
@@ -100,43 +64,53 @@ struct ContentView: View {
                 .frame(maxHeight: .infinity)
                 .padding(.leading, 10)
                 .background(Color.black)
-                
+
                 ScrollView {
                     VStack(alignment: .center) {
-                        Text("Hamburguesas")
-                            .font(.largeTitle)
-                            .padding(.bottom, 20)
-                        
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack {
-                                ForEach(burgers) { item in
-                                    Button {
-                                        selectedCard = item
-                                    } label: {
-                                        MenuItemView(imageName: item.imageName, title: item.title)
+                        if let errorMessage = errorMessage {
+                            Text("Error: \(errorMessage)")
+                                .foregroundColor(.red)
+                                .padding()
+                        } else if menuItems.isEmpty {
+                            ProgressView("Cargando menú...")
+                                .padding()
+                        } else {
+                            // Filtra los items por categoría
+                            Text("Hamburguesas")
+                                .font(.largeTitle)
+                                .padding(.bottom, 20)
+
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack {
+                                    ForEach(menuItems.filter { $0.category == "Hamburguesa" }) { item in
+                                        Button {
+                                            selectedCard = item
+                                        } label: {
+                                            
+                                            MenuItemView(imageURL: item.imageURL, title: item.name)
+                                        }
+                                    }
+                                }
+                                .padding(.bottom, 10)
+                            }
+
+                            Text("Bebidas")
+                                .font(.largeTitle)
+                                .padding(.top, 20)
+                                .padding(.bottom, 20)
+
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack {
+                                    ForEach(menuItems.filter { $0.category == "Bebidas" }) { item in
+                                        Button {
+                                            selectedCard = item
+                                        } label: {
+                                            MenuItemView(imageURL: item.imageURL, title: item.name)
+                                        }
                                     }
                                 }
                             }
-                            .padding(.bottom, 10)
                         }
-                        
-                        Text("Bebidas")
-                            .font(.largeTitle)
-                            .padding(.top, 20)
-                            .padding(.bottom, 20)
-                        
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack {
-                                ForEach(drinks) { item in
-                                    Button {
-                                        selectedCard = item
-                                    } label: {
-                                        MenuItemView(imageName: item.imageName, title: item.title)
-                                    }
-                                }
-                            }
-                        }
-                        
                         Spacer()
                     }
                     .padding(.horizontal, 50)
@@ -145,26 +119,52 @@ struct ContentView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .frame(width: screen.width, height: screen.height)
+            .frame(width: NSScreen.main!.visibleFrame.width, height: NSScreen.main!.visibleFrame.height)
             .sheet(item: $selectedCard) { card in
                 CardView(card: card) {
                     selectedCard = nil
                 }
             }
         }
+        .task {
+            await loadMenuItems()
+        }
+    }
+
+    func loadMenuItems() async {
+        do {
+            menuItems = try await apiService.fetchMenuItems()
+        } catch {
+            errorMessage = error.localizedDescription
+            print("Error al cargar los elementos del menú: \(error)")
+        }
     }
 }
 
 struct MenuItemView: View {
-    var imageName: String
+    var imageURL: String?
     var title: String
-    
+
     var body: some View {
         VStack {
-            Image(imageName)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 130, height: 130) // tamaño aumentado ligeramente
+            if let urlString = imageURL, let url = URL(string: urlString) {
+                AsyncImage(url: url) { image in
+                    image.resizable()
+                        .scaledToFit()
+                        .frame(width: 130, height: 130)
+                } placeholder: {
+                    ProgressView()
+                        .frame(width: 130, height: 130)
+                }
+            } else {
+                
+                Image(systemName: "photo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 130, height: 130)
+                    .foregroundColor(.gray)
+            }
+
             Text(title)
                 .font(.headline)
             Text("ver más")

@@ -95,7 +95,5 @@ struct MenuItem: Identifiable, Codable { // Cambié a MenuItem para reflejar el 
     var imageURL: String? // imageURL en el backend, no imageName
 
     
-    var id: UUID? {
-        return _id
-    }
+
 }

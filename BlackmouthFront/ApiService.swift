@@ -28,7 +28,7 @@ enum APIError: Error, LocalizedError {
     }
 }
 
-class APIService {
+class APIService: ObservableObject {
     private let baseURL = URL(string: "https://urchin-app-p4aaq.ondigitalocean.app/menu_items")!
 
     func fetchMenuItems() async throws -> [MenuItem] {
