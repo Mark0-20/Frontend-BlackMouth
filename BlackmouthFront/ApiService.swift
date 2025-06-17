@@ -80,5 +80,58 @@ class APIService: ObservableObject {
                throw APIError.decodingError(error)
            }
        }
+    
+    func updateMenuItem(item: MenuItem) async throws -> MenuItem {
+            guard let itemID = item.id else {
+                throw APIError.custom(error: "El ID del item es necesario para actualizar.")
+            }
+            guard let url = URL(string: "/menu_items/\(itemID.uuidString)", relativeTo: baseURL) else {
+                throw APIError.invalidURL
+            }
+
+            var request = URLRequest(url: url)
+            request.httpMethod = "PUT"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+           
+            request.httpBody = try JSONEncoder().encode(item)
+
+            let (data, response) = try await URLSession.shared.data(for: request)
+
+            guard let httpResponse = response as? HTTPURLResponse,
+                  (200...299).contains(httpResponse.statusCode) else {
+                if let responseData = String(data: data, encoding: .utf8) {
+                    print("API Error Response (update): \(responseData)")
+                }
+                throw APIError.invalidResponse
+            }
+
+            do {
+                return try JSONDecoder().decode(MenuItem.self, from: data)
+            } catch {
+                throw APIError.decodingError(error)
+            }
+        }
+
+        func deleteMenuItem(item: MenuItem) async throws {
+            guard let itemID = item.id else {
+                throw APIError.custom(error: "El ID del item es necesario para eliminar.")
+            }
+            guard let url = URL(string: "/menu_items/\(itemID.uuidString)", relativeTo: baseURL) else {
+                throw APIError.invalidURL
+            }
+
+            var request = URLRequest(url: url)
+            request.httpMethod = "DELETE"
+
+            let (_, response) = try await URLSession.shared.data(for: request)
+
+            guard let httpResponse = response as? HTTPURLResponse,
+                  (200...299).contains(httpResponse.statusCode) else {
+                
+                throw APIError.invalidResponse
+            }
+           
+        }
 
 }
