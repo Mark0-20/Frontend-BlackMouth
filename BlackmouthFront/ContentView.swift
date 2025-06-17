@@ -13,6 +13,8 @@ struct ContentView: View {
     @State private var errorMessage: String?
     @StateObject private var apiService = APIService() // Instancia del servicio API
     @State private var showingAddSheet: Bool = false
+    @State private var showingEditSheet: Bool = false
+    @State private var itemToEdit: MenuItem? = nil
 
 
 
@@ -135,6 +137,13 @@ struct ContentView: View {
             .sheet(item: $selectedCard) { card in
                 CardView(card: card) {
                     selectedCard = nil
+                } onEdit: { item in
+                    selectedCard = nil
+                    itemToEdit = item
+                    showingEditSheet = true
+                } onDelete: { item in
+                    selectedCard = nil
+                    await deleteMenuItem(item: item)
                 }
             }
             
@@ -146,6 +155,15 @@ struct ContentView: View {
                         }
                     }
             }
+            
+            .sheet(item: $itemToEdit) { item in
+                           EditMenuItemView(apiService: apiService, menuItem: item)
+                               .onDisappear {
+                                   Task {
+                                       await loadMenuItems()
+                                   }
+                               }
+                       }
         }
         .task {
             await loadMenuItems()
@@ -160,6 +178,17 @@ struct ContentView: View {
             print("Error al cargar los elementos del menú: \(error)")
         }
     }
+    
+    func deleteMenuItem(item: MenuItem) async {
+            do {
+                try await apiService.deleteMenuItem(item: item)
+                print("Item eliminado exitosamente: \(item.name)")
+                await loadMenuItems() 
+            } catch {
+                errorMessage = error.localizedDescription
+                print("Error al eliminar item: \(error)")
+            }
+        }
 }
 
 struct MenuItemView: View {
