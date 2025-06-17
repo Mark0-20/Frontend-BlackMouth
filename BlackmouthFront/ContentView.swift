@@ -14,6 +14,8 @@ struct ContentView: View {
     @StateObject private var apiService = APIService() // Instancia del servicio API
 
 
+
+
     var body: some View {
         NavigationView {
             HStack(spacing: 0) {
@@ -116,6 +118,9 @@ struct ContentView: View {
                     .padding(.horizontal, 50)
                     .frame(maxWidth: 800)
                     .frame(maxWidth: .infinity, alignment: .center)
+                    
+                
+
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }

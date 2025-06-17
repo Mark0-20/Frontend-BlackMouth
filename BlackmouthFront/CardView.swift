@@ -55,7 +55,7 @@ struct CardView: View {
 
             HStack {
                 VStack(alignment: .leading) {
-                    Text("Descripción") // Cambiado a descripción ya que no tienes ingredientes específicos en el backend
+                    Text("Descripción") 
                         .font(.headline)
                     Text(card.description) // Mostrar la descripción
                         .font(.subheadline)
@@ -92,7 +92,7 @@ struct MenuItem: Identifiable, Codable { // Cambié a MenuItem para reflejar el 
     var description: String
     var price: Double
     var category: String
-    var imageURL: String? // imageURL en el backend, no imageName
+    var imageURL: String?
 
     
 
