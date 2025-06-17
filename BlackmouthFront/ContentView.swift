@@ -82,7 +82,7 @@ struct ContentView: View {
 
                             ScrollView(.horizontal, showsIndicators: false) {
                                 HStack {
-                                    ForEach(menuItems.filter { $0.category == "Hamburguesa" }) { item in
+                                    ForEach(menuItems.filter { $0.category == "Comida rápida" }) { item in
                                         Button {
                                             selectedCard = item
                                         } label: {
