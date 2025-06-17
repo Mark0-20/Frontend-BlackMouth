@@ -5,12 +5,13 @@
 //  Created by Miguel Munoz on 14/06/25.
 //
 
+import Foundation
 import SwiftUI
 
 struct CardView: View {
-    var card: CardData
+    var card: MenuItem
     var onClose: () -> Void
-    
+
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
@@ -24,30 +25,44 @@ struct CardView: View {
                 }
             }
             .padding(.bottom, 10)
-            
-            Text(card.title)
+
+            Text(card.name) // Usar card.name
                 .font(.title)
                 .padding(.bottom, 10)
-            
-            Image(card.imageName)
-                .resizable()
-                .scaledToFit()
-                .frame(height: 120)
-                .cornerRadius(10)
+
+            // Cargar imagen desde URL
+            if let imageURLString = card.imageURL,
+               let url = URL(string: imageURLString) {
+                AsyncImage(url: url) { image in
+                    image.resizable()
+                        .scaledToFit()
+                        .frame(height: 120)
+                        .cornerRadius(10)
+                } placeholder: {
+                    ProgressView() // Mientras carga la imagen
+                        .frame(height: 120)
+                }
                 .padding(.bottom, 10)
-            
+            } else {
+                // Imagen por defecto si no hay URL o si falla
+                Image(systemName: "photo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 120)
+                    .cornerRadius(10)
+                    .padding(.bottom, 10)
+            }
+
             HStack {
                 VStack(alignment: .leading) {
-                    Text("Ingredientes")
+                    Text("Descripción") // Cambiado a descripción ya que no tienes ingredientes específicos en el backend
                         .font(.headline)
-                    ForEach(card.ingredients, id: \.self) { item in
-                        Text("\u{2022} \(item)")
-                            .font(.subheadline)
-                    }
+                    Text(card.description) // Mostrar la descripción
+                        .font(.subheadline)
                 }
-                
+
                 Spacer()
-                
+
                 VStack(alignment: .trailing) {
                     Text("Precio")
                         .font(.headline)
@@ -60,7 +75,7 @@ struct CardView: View {
                 }
             }
             .padding(.top, 10)
-            
+
             Spacer()
         }
         .padding()
@@ -71,10 +86,16 @@ struct CardView: View {
     }
 }
 
-struct CardData: Identifiable, Equatable {
-    let id = UUID()
-    var title: String
-    var imageName: String
-    var ingredients: [String]
+struct MenuItem: Identifiable, Codable { // Cambié a MenuItem para reflejar el backend y añadí Codable
+    let id: UUID? // El ID puede ser opcional al crear un nuevo item
+    var name: String
+    var description: String
     var price: Double
-} 
+    var category: String
+    var imageURL: String? // imageURL en el backend, no imageName
+
+    
+    var id: UUID? {
+        return _id
+    }
+}
