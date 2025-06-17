@@ -53,29 +53,32 @@ class APIService: ObservableObject {
     }
 
     func createMenuItem(item: MenuItem) async throws -> MenuItem {
-        guard let url = URL(string: "/menu_items", relativeTo: baseURL) else {
-            throw APIError.invalidURL
-        }
+           guard let url = URL(string: "/menu_items", relativeTo: baseURL) else {
+               throw APIError.invalidURL
+           }
 
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+           var request = URLRequest(url: url)
+           request.httpMethod = "POST"
+           request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-        let encoder = JSONEncoder()
-        request.httpBody = try encoder.encode(item)
+           let encoder = JSONEncoder()
+           var itemToSend = item
+           itemToSend.id = nil
 
-        let (data, response) = try await URLSession.shared.data(for: request)
+           request.httpBody = try encoder.encode(itemToSend)
 
-        guard let httpResponse = response as? HTTPURLResponse,
-              (200...299).contains(httpResponse.statusCode) else {
-            throw APIError.invalidResponse
-        }
+           let (data, response) = try await URLSession.shared.data(for: request)
 
-        do {
-            return try JSONDecoder().decode(MenuItem.self, from: data)
-        } catch {
-            throw APIError.decodingError(error)
-        }
-    }
+           guard let httpResponse = response as? HTTPURLResponse,
+                 (200...299).contains(httpResponse.statusCode) else {
+               throw APIError.invalidResponse
+           }
+
+           do {
+               return try JSONDecoder().decode(MenuItem.self, from: data)
+           } catch {
+               throw APIError.decodingError(error)
+           }
+       }
 
 }

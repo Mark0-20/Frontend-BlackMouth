@@ -86,13 +86,27 @@ struct CardView: View {
     }
 }
 
-struct MenuItem: Identifiable, Codable { // Cambié a MenuItem para reflejar el backend y añadí Codable
-    let id: UUID? // El ID puede ser opcional al crear un nuevo item
+struct MenuItem: Identifiable, Codable {
+    var id: UUID?
     var name: String
     var description: String
     var price: Double
     var category: String
     var imageURL: String?
+    
+    enum CodingKeys: String, CodingKey {
+            case id, name, description, price, category, imageURL
+        }
+
+        init(id: UUID? = nil, name: String, description: String, price: Double, category: String, imageURL: String? = nil) {
+            self.id = id
+            self.name = name
+            self.description = description
+            self.price = price
+            self.category = category
+            self.imageURL = imageURL
+        }
+
 
     
 

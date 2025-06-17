@@ -12,7 +12,7 @@ struct ContentView: View {
     @State private var menuItems: [MenuItem] = []
     @State private var errorMessage: String?
     @StateObject private var apiService = APIService() // Instancia del servicio API
-
+    @State private var showingAddSheet: Bool = false
 
 
 
@@ -61,6 +61,15 @@ struct ContentView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.bottom, 30)
                     Spacer()
+                    
+                    Button {
+                                           showingAddSheet = true
+                                       } label: {
+                                           Image(systemName: "plus.circle.fill")
+                                               .font(.largeTitle)
+                                               .foregroundColor(.green)
+                                       }
+                                       .padding(.bottom, 20)
                 }
                 .frame(minWidth: 60, maxWidth: 90)
                 .frame(maxHeight: .infinity)
@@ -119,8 +128,6 @@ struct ContentView: View {
                     .frame(maxWidth: 800)
                     .frame(maxWidth: .infinity, alignment: .center)
                     
-                
-
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
@@ -129,6 +136,15 @@ struct ContentView: View {
                 CardView(card: card) {
                     selectedCard = nil
                 }
+            }
+            
+            .sheet(isPresented: $showingAddSheet) {
+                AddMenuItemView(apiService: apiService)
+                    .onDisappear {
+                        Task {
+                            await loadMenuItems()
+                        }
+                    }
             }
         }
         .task {
