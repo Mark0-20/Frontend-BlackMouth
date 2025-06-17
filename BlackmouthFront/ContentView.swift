@@ -87,7 +87,7 @@ struct ContentView: View {
                                 .padding()
                         } else {
                             // Filtra los items por categoría
-                            Text("Hamburguesas")
+                            Text("Comida rápida")
                                 .font(.largeTitle)
                                 .padding(.bottom, 20)
 
