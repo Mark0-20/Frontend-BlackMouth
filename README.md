@@ -4,6 +4,23 @@ Frontend de proyecto MacOs BlackMouth
 
 # 🍟 Frontend BlackMouth
 
+Tema del proyecto: Menú digital de hamburguesería – BlackMouth 🍔
+
+Integrantes del equipo:
+
+Marco Antonio Hernández Magaña
+
+Sebastián Mendoza Sosa
+
+Miguel Muñoz Hernández
+
+Máximo Núñez Mireles
+
+Daniel Solís Padierna
+
+URL de la API desplegada:
+🔗 https://urchin-app-p4aaq.ondigitalocean.app/menu_items
+
 Frontend para la aplicación **BlackMouth**, una plataforma de menú digital para un restaurante de hamburguesas. Desarrollado con **SwiftUI** y consumo de API REST usando `URLSession`.
 
 ## 🧩 Tecnologías utilizadas
