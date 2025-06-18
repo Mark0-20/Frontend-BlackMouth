@@ -37,6 +37,7 @@ Frontend-BlackMouth/
 └── Info.plist
 ```
 
+
 ## 🔌 Conexión al Backend
 
 Este frontend se conecta a la API de Vapor desplegada en DigitalOcean:
